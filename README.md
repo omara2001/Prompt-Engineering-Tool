@@ -20,7 +20,7 @@ PromptSphere is a modern, user-friendly interface for interacting with powerful 
   <table>
     <tr>
       <td width="50%">
-        <img src="https://github.com/omara2001/Prompt-Engineering-Tool/blob/main/AppUIt.png" alt="App UI">
+        <img src="https://github.com/omara2001/Prompt-Engineering-Tool/blob/main/AppUI.png" alt="App UI">
         <p align="center"><b>App UI</b></p>
       </td>
       <td width="50%">

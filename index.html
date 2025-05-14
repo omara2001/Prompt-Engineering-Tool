@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PromptSphere</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Script to prevent flash of unstyled content for dark mode -->
+    <script>
+        // Check for saved theme preference or use system preference
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        // Apply dark mode class early to prevent flash
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-gray-900 min-h-screen font-sans">
+    <!-- Main Container -->
+    <div class="max-w-6xl mx-auto px-4 py-6">
+        <!-- Header with Logo and Dark Mode Toggle -->
+        <header class="flex justify-between items-center mb-8">
+            <div class="flex items-center">
+                <div class="logo-container w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow-md mr-3">
+                    <i class="fas fa-brain text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">PromptSphere</h1>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">Unleash AI Creativity with Groq</p>
+                </div>
+            </div>
+            <button id="theme-toggle-btn" type="button" class="p-2 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-white transition-all duration-300 hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Toggle theme">
+                <i class="fas fa-sun dark:hidden"></i>
+                <i class="fas fa-moon hidden dark:block"></i>
+            </button>
+        </header>
+
+        <!-- Main Content Area -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Left Panel: Input -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700">
+                <!-- Model Selection -->
+                <div class="mb-4">
+                    <label for="model-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select AI Model</label>
+                    <div class="relative">
+                        <select id="model-select" class="block w-full pl-4 pr-10 py-2 text-base border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 rounded-md text-gray-900 dark:text-white" type="select">
+                            <option value="" disabled selected>Loading models...</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Prompt Input -->
+                <div class="mb-4">
+                    <label for="prompt-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Craft Your Prompt</label>
+                    <div class="relative">
+                        <textarea id="prompt-input" rows="6" class="block w-full px-4 py-3 text-gray-900 dark:text-white bg-white dark:bg-gray-800 rounded-md border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="What would you like to ask the AI?"></textarea>
+                        <div class="absolute bottom-3 right-3 text-xs text-gray-500 dark:text-gray-400 prompt-counter hidden">
+                            <span id="prompt-counter">0</span> characters
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between items-center mb-4">
+                    <button id="submit-btn" type="button" class="flex items-center px-5 py-2 font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all duration-200" aria-label="Generate response">
+                        <span>Generate</span>
+                        <div id="loading-spinner" class="hidden ml-2">
+                            <div class="loader-dots flex space-x-1">
+                                <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div>
+                                <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse delay-100"></div>
+                                <div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse delay-200"></div>
+                            </div>
+                        </div>
+                    </button>
+                    <button id="clear-btn" type="button" class="flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700" aria-label="Clear prompt">
+                        <i class="fas fa-eraser mr-1.5"></i> Clear
+                    </button>
+                </div>
+
+                <!-- Prompt History -->
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-sm font-medium text-gray-900 dark:text-gray-100">Prompt History</h3>
+                        <button id="clear-history-btn" type="button" class="text-xs text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400" aria-label="Clear history">
+                            <i class="fas fa-trash-alt mr-1"></i> Clear All
+                        </button>
+                    </div>
+                    <div id="history-container" class="space-y-2 max-h-40 overflow-y-auto custom-scrollbar">
+                        <!-- History items will be added here -->
+                        <p class="text-sm text-gray-500 dark:text-gray-400 italic">No history yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Response -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-5 border border-gray-200 dark:border-gray-700">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">AI Response</h2>
+                    <button id="copy-btn" type="button" class="flex items-center px-3 py-1 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700" disabled aria-label="Copy response">
+                        <i class="fas fa-copy mr-1.5"></i> Copy
+                    </button>
+                </div>
+
+                <!-- Response Container with Better Visibility -->
+                <div id="response-container" class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md p-4 min-h-[350px] max-h-[500px] overflow-y-auto custom-scrollbar text-gray-900 dark:text-white">
+                    <div class="flex items-center justify-center h-full">
+                        <div class="text-center">
+                            <div class="text-gray-400 dark:text-gray-500 mb-3">
+                                <i class="fas fa-robot text-4xl"></i>
+                            </div>
+                            <p class="text-gray-500 dark:text-gray-400">Your AI response will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Response Metadata -->
+                <div id="response-metadata" class="mt-3 text-xs text-gray-600 dark:text-gray-400 hidden">
+                    <div class="flex flex-wrap gap-2">
+                        <span id="model-used" class="inline-flex items-center px-2 py-1 rounded-md bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300">
+                            <i class="fas fa-microchip mr-1"></i> <span id="model-name">-</span>
+                        </span>
+                        <span id="response-time" class="inline-flex items-center px-2 py-1 rounded-md bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300">
+                            <i class="fas fa-clock mr-1"></i> <span id="time-value">0</span> sec
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-8 text-center text-gray-500 dark:text-gray-400 text-xs">
+            <p>© 2025 PromptSphere | Powered by <a href="https://groq.com" target="_blank" rel="noopener" class="text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">Groq API</a></p>
+        </footer>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

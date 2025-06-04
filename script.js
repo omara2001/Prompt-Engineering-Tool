@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const timeValue = document.getElementById('time-value');
 
     // API URL from config
-    const API_BASE_URL = window.CONFIG ? CONFIG.API_URL : "https://prompt-engineering-production-d1c7.up.railway.app/api";
+    const API_BASE_URL = window.CONFIG ? CONFIG.API_URL : "https://prompt-engineering-production-0d85.up.railway.app/";
 
     console.log('Using API URL:', API_BASE_URL);
 

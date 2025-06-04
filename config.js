@@ -6,7 +6,7 @@
 
 const CONFIG = {
     // API URL Configuration
-    API_URL: "https://prompt-engineering-production-d1c7.up.railway.app/api",
+    API_URL: "https://prompt-engineering-production-0d85.up.railway.app/",
 
     // Application Version
     VERSION: "1.0.0",
